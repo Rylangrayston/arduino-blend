@@ -6,6 +6,7 @@ Arduino is great at doing things in the real world.
 So lets get them connected.
 
 Put shortly we intend to do the following with a GUI addon in blender.
+
 blender data<-->blue tooth serial port<-->arduino variables and pins
 
 The blender addon will give you buttons for each pin alowing you to 
