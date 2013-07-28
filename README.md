@@ -1,42 +1,28 @@
 
 
-
-
-
-
 ### The Idea
+Blender is great at simulating the real world.
+Arduino is great at doing things in the real world.
+So lets get them connected.
 
+Put shortly we intend to do the following with a GUI addon in blender.
+blender data<-->blue tooth serial port<-->arduino variables and pins
 
-```
-$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-```
+The blender addon will give you buttons for each pin alowing you to 
+setup how your micro contoler will work.  The arduino-blend script 
+Actualy genarates the code that goes on the micro controler.
 
-If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.
-
-### Designer Templates
-We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.
-
-### Rather Drive Stick?
-If you prefer to not use the automatic generator, push a branch named `gh-pages` to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.
-
-### Authors and Contributors
-You can @mention a GitHub username to generate a link to their profile. The resulting `<a>` element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (@defunkt), PJ Hyett (@pjhyett), and Tom Preston-Werner (@mojombo) founded GitHub.
-
-### Support or Contact
-Having trouble with Pages? Check out the documentation at http://help.github.com/pages or contact support@github.com and we’ll help you sort it out.
+Upon uploading the genarated code the blender file and the arduino 
+can communicate!
 
 
 
 
 
+If you wish to commit you must read project-goals-READ-THIS.txt
 
-A blender gui addon that alows Blender3d and Micro Controllers to control eachother!
+### Insturctions 
 
-If you wish to colaborate you must read project-goals-READ-THIS.txt
-
-If your just looking to use this addon then you have come to the right place 
 
 1 download the latest blender, git the zip file not the installer !
 
@@ -95,5 +81,12 @@ Our goal is to get the above list to look like this
 Have fun!
 
 to shorten it more we shuld probably make some example blends .. like a blink LED on pin 13 when cube moves or something  
+
+
+
+```
+CODE
+```
+
 
 
