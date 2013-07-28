@@ -1,88 +1,70 @@
-Im woried about this project 
+Im woried about this project
 
 Arduino is a great thing for people to learn how to program on!,
-but Building a Gui as flexible as this one could be dangerus to arduino
- as a learning tool, because this gui codes micro controlers for you!
+but Building a Gui as flexible as this one could be dangerous to arduino
+ as a learning tool, because this gui codes micro controllers for you!
 
-I dont want to take all the programing out of arduino and
+I dont want to take all the programming out of arduino and
  I dont want to take learning code away.. even when the gui is
 making the code so!....
 
-When you click a button in the gui and it effects the arduino code, 
-the code should be spoken and flashed to the user! 
+When you click a button in the gui and it effects the arduino code,
+the code should be spoken and flashed to the user!
 ie "pinMode(13, OUTPUT);" or "pinMode(13, OUTPUT); // causes pin 13 to be setup as an output"
 
-Also sound effects are encuraged in this gui addon 
+Also sound effects are encouraged in this gui addon
 (kids are going to use this addon it shuld be interactive
- and fun!, lol as if adults wont like it to) 
- If you dont like it there are check boxes to turn sound and 
- or notifications off ... just remember people have differnt 
+ and fun!, lol as if adults wont like it to)
+ If you dont like it there are check boxes to turn sound and
+ or notifications off ... just remember people have different
  ways of learning ie auditory, visual.
 
 
-No matter what this will change the way people learn arduino(and other micro controlers) 
+No matter what this will change the way people learn arduino(and other micro controllers)
 So lets do our best to make the change positive!
-Ether way I have like 20 blender-robotics projects to pull off and I dont feel like writeing all that 
-code so im writeing some python code and a gui that will write code for all 20 project for me! 
+Ether way I have like 20 blender-robotics projects to pull off and I dont feel like writeing all that
+code so im writing some python code and a gui that will write code for all 20 project for me!
 
-The goal of this project is to link the input and output 
-pins of micro contorolers to gui variables(custom properties) in 
-blender, after this is acomplished blender drivers and or 
-parenting can connect the pin states or vise-versa  to anything 
-in blender.  think IK leg joints :) 
-Because micro contolers have mulitpul uses for each pin the blender gui will write an auto_script.ino 
-corasponding to the blend file that made it. 
+The goal of this project is to link the input and output
+pins of micro controllers to gui variables(custom properties) in
+blender, after this is accomplished blender drivers and or
+parenting can connect the pin states or vise-versa  to anything
+in blender.  think IK leg joints :)
+Because micro contollers have multiple uses for each pin the blender gui will write an auto_script.ino
+corresponding to the blend file that made it.
 
-extended goals of the project are: 
-    
+extended goals of the project are:
+   
     add a blender property and pass it  as a given variable to the arduino.
-        the blender property will coralate with an int or a long variable on the micro 
-        controler so the user shuld be able to pick and then the min and max values 
-        shuld be set acordingly.
+        the blender property will correlate with an int or a long variable on the micro
+        controller so the user should be able to pick and then the min and max values
+        shuld be set accordingly.
 
-    add pin groopings for more complex control:
-        add propgroop conecting the rotation of a blender object
-        too 2 pins( direction, step ) for controling a stepper
-        
-        add propgroop for communicatin the rotaton of an object to the l6470 driver
-        
+    add pin grooppings for more complex control:
+        add propgroop connecting the rotation of a blender object
+        too 2 pins( direction, step ) for controlling a stepper
+       
+        add propgroop for communication the rotation of an object to the l6470 driver
+       
     add a string property for injecting custom code into the auto script right from blender
     (implement for setup, white space, and loop!) or better yet some kind of code merging
     where the user defines some text block with the code to merge.
-        
-    bge I dont know what specificaly needs to be done here but the game engine is reall time
-    and so is the arduino so they need to be able to talk with eachother... 
-    
-    
-    Micro controler out put pins are slaves to the animation but input pins are a bit more 
-    tricky .. they would like to slave objects in an often static (paused) animation 
-    The data from the input can flow in regardles of the animation playing.. 
-    A begin recording data button shuld be avalible for each pin as well as a 
-    record data from all SELECTED input pins.  The data shuld be recorded as key frames of
+       
+    bge I dont know what specifically needs to be done here but the game engine is real time
+    and so is the arduino so they need to be able to talk with each other...
+   
+   
+    Micro controller out put pins are slaves to the animation but input pins are a bit more
+    tricky .. they would like to slave objects in an often static (paused) animation
+    The data from the input can flow in regardless of the animation playing..
+    A begin recording data button should be available for each pin as well as a
+    record data from all SELECTED input pins.  The data should be recorded as key frames of
     the input pins custom property so that it can be easily manipulated with the graph editor
-    ... as sample rate for each input is manditory! the sample can be changed on the fly.
-    and an option for edge detection to increas the sampe rate. (so it will take more samples 
-    when there is faster change) edge detection would be better done right on the arduino as 
+    ... as sample rate for each input is mandatory! the sample can be changed on the fly.
+    and an option for edge detection to increase the sample rate. (so it will take more samples
+    when there is faster change) edge detection would be better done right on the arduino as
     the blender side is a bit blind here.
-    
-    Add a variable to the arduino that will control a blender property... just like a 
-    analog input pin but dont sence a pin just sence a variable.... also implement an 
-    inturpt option.
-    
-    
-    
-    
-    
-        
-        
-        
-         
-
-
-
-
-
-
-
-
-
+   
+    Add a variable to the arduino that will control a blender property... just like a
+    analogue input pin but dont sense a pin just sense a variable.... also implement an
+    interrupt option.
