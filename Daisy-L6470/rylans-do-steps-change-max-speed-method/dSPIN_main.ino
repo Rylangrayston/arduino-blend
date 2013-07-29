@@ -1,3 +1,26 @@
+// there has been alot of discution as to where or not you can use the L6470 driver 
+// for milling machines and many other purposes where 2 or more motors
+// need to be sincronized as well as have dinamicly sined speeds.
+// the problem is there is no clear way to change the speed register wile the motor 
+//is runing, some have sugested to just use the L6470 in step at a time mode
+// but I feel this is a waste of alot of great features ie stall detection 
+// so without further adue you cna go see the solution Look lines around
+// 110 to 120  ... if you run this you will see that the stepper s accearation 
+//is nice and smoothe while still being controlled dynamicaly ( wile the motor is 
+// running ) It is a very simple work around ...
+
+// now the comes the part thats not done yet ... daisy chining 
+// using the method dynamic speed method combinded with daisy chaining 
+// one more thing ... load all the bits but one on the daisy chain while the 
+// motor is finishg the privius command then using an interupt as soon as 
+// the L6470 buisy pins are all low load the last bit in the daisy .. 
+// this shuld reduce any delays that could cause motor noise! 
+ 
+
+
+
+
+
 //dSPIN_main.ino - Contains the setup() and loop() functions.
 
 float testSpeed = 10;
@@ -84,7 +107,7 @@ void loop()
 {
   // 200 steps is one revolution on a 1.8 deg/step motor.
   dSPIN_Move(FWD, 40);
-  while (digitalRead(dSPIN_BUSYN) == LOW);  // Until the movement completes, the
+  while (digitalRead(dSPIN_BUSYN) == LOW);  // wait Until the movement completes, the
   dSPIN_SetParam(dSPIN_MAX_SPEED, MaxSpdCalc(max_speed_rise)); 
   max_speed_rise += acceleration_rate; 
   if (max_speed_rise > 100){
@@ -95,16 +118,5 @@ void loop()
     acceleration_rate = 1;
     delay (1000);
   }
-  //  BUSYN pin will be low.
-  //dSPIN_SoftStop();                         // Inserting a soft stop between
-                                            //  motions ensures that the driver
-                                            //  will execute the next motion with
-                                            //  the right speed.
-  //while (digitalRead(dSPIN_BUSYN) == LOW);  // Wait for the soft stop to complete.
-  //delay(500);                               // Pause. Not necessary for proper operation.
-  //dSPIN_Move(REV, 20000);                     // Now do it again, but backwards.
-  //while (digitalRead(dSPIN_BUSYN) == LOW);
-  //dSPIN_SoftStop();
-  //while (digitalRead(dSPIN_BUSYN) == LOW);
-  //delay(200);
+
 }
