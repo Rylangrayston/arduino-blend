@@ -1,15 +1,34 @@
 import bpy
 from bpy.props import *
 import aud
-# just testing git with this line  commit 2 in same push
+import sys 
+
+#-----------------SETUP OF SERIAL PORT CONNECTON TO ARDUINO-------------------
+import site   # I dont know why
+import serial # module for talking to a serial port
+import time   # module for reading system time 
+import struct # module that packs data into byte sized chunks to be sent over serial
+
+#--------------------------Globla variabls-------------------------------------------------
+USB_device_path = "/dev/ttyUSB" #None
+Serial_Port = None
+ports_to_try = 10
+
+
+
+
 sound = False
-####hover_sound = aud.Factory.file("sounds/hover_sound.wav")
-####open_sound = aud.Factory.file("sounds/open_sound.wav")
-#print(sound.volume)
-#sound.volume(1) #this has no effect .. how do we change the volume?
-
-####aud.device().play(open_sound)
-
+#try:
+#        
+#    hover_sound = aud.Factory.file("sounds/hover_sound.wav")
+#    except IOError:
+#        pass
+#    open_sound = aud.Factory.file("sounds/open_sound.wav")
+#    #print(sound.volume)
+#    #sound.volume(1) #this has no effect .. how do we change the volume?
+#    
+#    aud.device().play(open_sound)
+    
 
 
 #bl_info = {
@@ -24,7 +43,7 @@ sound = False
 #    "tracker_url": "" ,
 #    "category": "Object"}
 
-import time
+
 
 
 #Ok so here is the plan... 
@@ -381,7 +400,44 @@ def create_ino():
 time.sleep(.1)
 
 def open_serial_port():
-    print('Serial Port opened')
+
+    for port in range(ports_to_try):
+            
+        try:
+            #operation_that_can_throw_ioerror()
+            # Create a serial object. The name will need changed accordingly  $$ The name will need to be changed accordingly
+            global Serial_Port
+            Serial_Port = serial.Serial(USB_device_path + str(port), timeout = 1) # instantiates an object called Serial_Port
+            print('Opening Serial Port') 
+            #time.sleep(2)  # gives the Serial Port time to open 
+            progress(60) # gives the seril port time to open and a fancy display in terminal
+            Serial_Port.flushInput() # flushes the serial buffer
+            Serial_Port.flushOutput() 
+            msg = ('Serial Port opened at ' + USB_device_path + str(port))
+            print(msg)
+            
+            return(msg)
+        except serial.serialutil.SerialException:   #except serial.SerialException, e:
+            msg = ('Cannot open serial port at ports ' + USB_device_path + str(0) + ' thru to ' + USB_device_path + str(ports_to_try))  #handle_the_exception_somehow()
+            print(msg)
+            return(msg)
+        
+def close_serial_port():
+    try:
+        msg =  ' Serial Port Closed ' #   this doset work but its what i want.. >>> 'Serial Port at ' + Serial_port.port + ' has been Closed'
+        
+        Serial_Port.close()
+        return(msg)
+    except serial.serialutil.SerialException:
+        msg = 'Cannot Close port, as u have yet to open one!'
+        print(msg)
+        return(msg)    
+
+def progress(n):
+   for i in range(n+1):
+       sys.stdout.write('\r%3s%% [%s>%s]' % (i, '='*i, ' '*(n-i)))
+       sys.stdout.flush()
+       time.sleep(0.04)
 
 
 
@@ -412,35 +468,47 @@ def GetFiltersString(steps):
         return TheFilter
 
 
-Arduino_listItems = (
-    ('a', "Arduino Pro Mini", ""),
-    ('b', "Arduino Lenardo", "")
+Micro_choices = (
+    ('a', "Arduino Pro Mini", "tool tip"),
+    ('b', "Arduino Lenardo", "tool tip")
 )
 
-Arduino_listItems_dict = {}
-for identifier, label, description in Arduino_listItems:
-    Arduino_listItems_dict[identifier] = label
+
+def make_pin_setup_button(pin):
+    ''' returns a list of items containt the data for the setup pins buttons'''
+    pin_setup_button = EnumProperty(items=(
+        ('none', 'None', 'tool tip'),
+        ('analog_in', 'Analog In', 'tool tip'),
+        ('pwm', 'PWM', 'tool tip'),
+        ('digital_out', 'Digital Out', 'tool tip')),
+        name="B_Choice"
+    )
+pin_setup_button = make_pin_setup_button(micro.pins[0])
+
+dict_of_pin_setup_buttons = {}
+for identifier, label, description in Micro_choices:
+    dict_of_pin_setup_buttons[identifier] = label
 
 
-class arduinoStep(bpy.types.PropertyGroup):
+class pin_groop(bpy.types.PropertyGroup):
     button_choice = EnumProperty(items=(
-        ('none', 'None', ''),
-        ('analog_in', 'Analog In', ''),
-        ('pwm', 'PWM', ''),
-        ('digital_out', 'Digital Out', '')),
+        ('none', 'None', 'tool tip'),
+        ('analog_in', 'Analog In', 'tool tip'),
+        ('pwm', 'PWM', 'tool tip'),
+        ('digital_out', 'Digital Out', 'tool tip')),
         name="B_Choice"
     )
 
 
 class arduino(bpy.types.PropertyGroup):            
     type_add = EnumProperty(
-        items=Arduino_listItems,
+        items=Micro_choices,
         name = "Choose Micro Controler",
         default = 'a',
         #update=type_add_cb
     )
     
-    steps = CollectionProperty(type=arduinoStep, name="arduino Step")
+    steps = CollectionProperty(type=pin_groop, name="arduino Step")
     index = IntProperty() # min/max/default?
 
 
@@ -535,10 +603,31 @@ class arduino_step_reset(bpy.types.Operator):
 
 
     def execute(self, context):
-        link_gui()        
-        open_serial_port()          
-        self.report({'INFO'}, "Serial Port Opend")     
+        #link_gui()  
+        msg = open_serial_port()          
+        self.report({'INFO'}, msg)     
+        return {'FINISHED'}   
+    
+    
+class arduino_step_reset(bpy.types.Operator):
+    bl_idname = 'object.close_serial_port_button'
+    bl_label = 'Ino'
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+
+    @classmethod
+    def poll(cls, context):
+        return ((context.active_object is not None) and
+                context.active_object.type == 'MESH')
+
+
+    def execute(self, context):
+        #link_gui()        
+        msg = close_serial_port()          
+        self.report({'INFO'}, msg)     
         return {'FINISHED'}    
+       
+     
        
 
 class arduino_steplist(bpy.types.Panel):
@@ -565,20 +654,21 @@ class arduino_steplist(bpy.types.Panel):
         row = layout.row()
         
         row.template_list("arduino_UL_steplist", "", context.scene.arduino, "steps", context.scene.arduino, "index", rows=4, maxrows=10,)
-        
+        #row.prop(pin_setup_button, text=" ", expand=True)
       
         
         row = layout.row()
         row.operator("object.arduino_create_ino", text=" Create C:\\auto_script.ino ", )  # icon="ZOOMIN"
         
         row = layout.row()
-        row.operator("object.open_serial_port_button", text=" Open Serial Port ", ) 
+        row.operator("object.open_serial_port_button", text=" Open Serial Port ", )
+        
+        row = layout.row()
+        row.operator("object.close_serial_port_button", text="Close Serial Port ", ) 
         #print('panle draw function was called') 
         if sound: 
             aud.device().play(hover_sound)
-#        if micro != None:
-#            global micro
-#            micro = link_gui(micro)
+
         
         msg = link_gui()
         if msg != None:
