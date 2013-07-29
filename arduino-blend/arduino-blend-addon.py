@@ -66,6 +66,34 @@ chosen_micro = 'Arduino Pro Mini'
 
 micro = None # 
 
+class Code:
+    ''' this holds actual lines of code to be writen to the ino file
+    instaces of the Code class will be specific to the chip but not the board
+    for example all Arduinos boards will probably be able to use the same Code instance
+    but talking to a propeler dev board will require a compleatly differnt Code instance
+    I really only know the Arduino Wireing languag right now so I dont know if this 
+    is the right way to cover multiple micro contoler brands but for now ill asume that
+    alot of the things you can do with them are the same but jsut with differn lines of code
+    
+    
+    '''
+    
+    def __init__(
+                 self,
+                 micro_brand,
+                 pin_type
+                 ):
+        # ie arduino or avr or propeler etc.             
+        self.micro_brand = micro_brand
+        # a dictinary of pin types : code to set pin as that type ie {'output':'
+        self.pin_type = pin_type
+        
+                     
+                  
+        
+    
+    
+
 class Pin:
     '''Ok the Pin class holds everything we know about a pin aka wire on the micro controler board.
     It also holds the blender object that we want to control this pin instance with '''
@@ -115,14 +143,36 @@ class MicroControler:
     def __init__(
                   self,
                   name = None,
+                  code = None,
                   pins = None
                  ):
         # the name of the micro controler
         self.name = name
+        # returns code to be writen in the micro contoler script .ino
+        self.code = code
         # a list of pins 
         self.pins = pins
-        
-
+    name = None  
+    def make_code(self,name = name, code_type = None, values = None, pin = None):
+        #print(self.name,'<<<<<<<<<<<<')
+        if 'rduino' in self.name:
+            ###### arduino make_code():    #######
+            if code_type == 'pinMode':
+                #return(micro.code.pin_type[pin.type][0] + pin.board_lable + micro.code.pin_type[pin.type][1])
+                return(self.code.pin_type[pin.type][0] + pin.board_lable + self.code.pin_type[pin.type][1])
+            ###################################### 
+    def make_all_code(self,name=name):
+        if 'rduino' in self.name:
+            ##### arduino make_all_code ###
+            #open a file to write in 
+            #write some commets 
+            #write the first bit of code that is alwase the same
+            #write the pin setMode codes for each pin 
+            #write the second bit of code that is alwase the same 
+            #write the loop contents that is alwase the same ie serial variable reciver code 
+            #write the if statements for pins 
+            #write closing bit of code that is alwase the same 
+            ###############################
 # ok now if a choice is made 
 #we will create an instance of that micor controler
 #for now to keep this quick ill just put two pins in its list 
@@ -135,6 +185,14 @@ def instantiate_micro(chosen_micro):
     
     if chosen_micro == 'Arduino Pro Mini':
         micro = MicroControler(name='Arduino Pro Mini',
+                                code = Code(
+                                            micro_brand = 'Arduino',
+                                            pin_type = {'none':['// lol.. a comment that dose nothing ', ' at all'], 
+                                                        'analog_in':['//... lol nothing, nevermind ', ' at all'],
+                                                        'pwm':['pinMode(', ', OUTPUT);'], 
+                                                        'digital_out':['pinMode(', ', OUTPUT);']
+                                                        }
+                                            ),
                                 pins = [
                                         Pin(
                                             board_lable='13', 
@@ -198,6 +256,7 @@ micro = instantiate_micro(chosen_micro)
 print(micro.pins[0].value)
 
 
+
 def link_gui():
     i = 0
     #print('---->',bpy.data.scenes['Scene'].arduino.steps[0].button_choice)
@@ -208,7 +267,9 @@ def link_gui():
             #print('pin has changed')
             global micro
             micro.pins[i].type = bpy.data.scenes['Scene'].arduino.steps[i].button_choice
-            note = 'Pin ' + pin.board_lable +' set as ' + pin.type
+            note = 'Pin ' + pin.board_lable +' set as ' + pin.type + ' with >>> ' + str(micro.make_code(code_type='pinMode', pin = pin)) #micro.code.pin_type[pin.type][0] + pin.board_lable + micro.code.pin_type[pin.type][1]
+            #micro.make_code()
+            #print(micro.code.pin_type['output'])
             
         i += 1        
     return(note)
@@ -254,6 +315,19 @@ for pin in micro.pins:
 #that runs this function
 
 def create_ino():
+    ''' this reads thrue all the data set by the arduino blend gui panles and
+     creates the a script which when loaded onto a micro controler 
+    will cause the micro controler pins to be a slave to the chosen blender 
+    properties. and will cause things in blender to be slaves to the chosen 
+    input pins on the arduino'''  
+    
+    print('//  This file was automaticaly generated by arduino blend , a blender add on created by:')
+    print('//  Rylan Grayston: Project founder,  wrote the code that writes the code :P')
+    print('//  Mohamed Sakr: gave the code a gui in blender')  
+    micro.make_all_code
+    
+    
+    
     print('Created C:\\auto_script.ino')
     print(micro.pins[0].type)
     pass
